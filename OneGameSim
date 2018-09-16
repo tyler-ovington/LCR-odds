@@ -1,0 +1,61 @@
+#code written in Python 2.7.6
+
+#creates a function "OneGameSim" that simulates one game of LCR
+#input number of players (typically 3+) and number of coins for each player (typically 3+)
+def OneGameSim(num_players,num_coins_each):
+    #random module will be used to solve dice rolls
+    import random
+    #creates variable to track a coin value for each player
+    players=[]
+    for i in range(num_players):
+        players.append(num_coins_each)
+    #single game is simulated in this while loop    
+    while True:    
+        #a turn for each player is simulated in this for statement
+        for i in range(len(players)):
+            if players[i]>=3:
+                coins=3
+            else:
+                coins=players[i]  
+            for ii in range(coins):
+                roll = random.sample(['D','D','D','C','L','R'],1)
+                if roll==['C']:
+                    players[i]-=1
+                if roll==['L']: 
+                    players[i]-=1
+                    if i!=0: #required because "player 1" is at position [0] in players
+                        players[i-1]+=1
+                    else:
+                        players[num_players-1]+=1
+                if roll==['R']:
+                    players[i]-=1
+                    if i!=(num_players-1):
+                        players[i+1]+=1
+                    else:
+                        players[0]+=1 
+            #check if all but one player has no coins; if so end the game by breaking while loop and returning the winning player
+            n=0
+            for m in range(len(players)): 
+                if players[m] == 0:
+                    n+=1    
+            if n==num_players-1:
+                w=-1
+                for i in range(num_players):
+                    if players[i]!=0:
+                        return w+2
+                        break 
+                    else:
+                        w+=1
+ 
+#creates a function "NGamesSim" that runs OneGameSim a number of times and returns data on the winner of each game
+def NGamesSim(num_players,num_coins_each,num_games):
+    winners=[]
+    totals=[]
+    for i in range(num_games):
+        winners.append(OneGameSim(num_players,num_coins_each))
+    for i in range(num_players):
+        totals.append(winners.count(i+1))
+    return totals
+
+#runes NGamesSim
+print NGamesSim(3,3,10)
